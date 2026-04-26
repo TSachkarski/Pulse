@@ -56,11 +56,11 @@
   --d-icon:20px;  /* icon/emoji in small containers */
 
   /* Named colour tokens — previously hardcoded hex */
-  --bestday-dark:var(--bestday-dark);    /* bestday card dark gradient stop */
-  --bestday-mid:var(--bestday-mid);     /* bestday card mid gradient stop */
-  --brand-deep:var(--brand-deep);      /* breathe core inhale state */
-  --q-purple-bg:var(--q-purple-bg);     /* quote card q0 background */
-  --q-lilac-bg:var(--q-lilac-bg);
+  --bestday-dark:#1A5C34;    /* bestday card dark gradient stop */
+  --bestday-mid:#2EA361;     /* bestday card mid gradient stop */
+  --brand-deep:#4340B8;      /* breathe core inhale state */
+  --q-purple-bg:#EEEAFF;     /* quote card q0 background */
+  --q-lilac-bg:#F0E8FF;
 
   /* Gradient tint tokens */
   --G-tint:#D8F5EC;   --G-dark:#1E9060;
@@ -90,18 +90,18 @@
 }
 
 /* ── BASE ── */
-html,body{height:100%;overflow:hidden}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-items:center;justify-content:center}
+html{height:100%}body{min-height:100%;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased}
 
 /* ── FRAME — fully responsive ── */
 .frame{
-  width:100%;max-width:430px;
+  width:100%;
   min-height:100vh;
   background:
     radial-gradient(ellipse 80% 50% at 82% 2%,rgba(88,85,214,.08) 0%,transparent 55%),
     radial-gradient(ellipse 70% 45% at 16% 98%,rgba(45,184,122,.06) 0%,transparent 55%),
     var(--bg);
-  position:relative;overflow:hidden;
+  position:relative;
 }
 @media(min-width:700px){
   body{
@@ -110,16 +110,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
       radial-gradient(ellipse 50% 50% at 82% 88%, rgba(45,184,122,.08), transparent 55%),
       var(--body-desktop);
     padding:24px;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;overflow:hidden;
   }
   .frame{
     min-height:auto;height:92vh;max-height:920px;
+    max-width:430px;
     border-radius:48px;
+    overflow:hidden;
     box-shadow:
       0 0 0 1px rgba(0,0,0,.08),
       0 40px 100px rgba(0,0,0,.24),
       0 20px 50px rgba(88,85,214,.1),
       inset 0 1px 0 rgba(255,255,255,.4);
   }
+  /* Desktop: screens are absolute positioned inside the phone frame */
+  .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+  .screen::before{display:block;content:'';height:52px;position:sticky;top:0;z-index:100;pointer-events:none;margin-bottom:-52px}
   /* Desktop: extra top clearance for the 48px bevel + 52px fake SB */
   .hh{padding-top:78px}
   .ci-hd{padding-top:76px}
@@ -175,6 +182,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
 .sb-icons svg{fill:var(--ink-3)}
 /* Mobile: hide the fake bar entirely — the real device draws its own */
 @media(max-width:699px){
+  .frame{overflow-x:hidden;max-width:100%}
+  /* Mobile: screens flow normally, no absolute positioning */
+  .screen.on{display:block;width:100%;min-height:100vh}
+  .bnav{position:fixed !important;bottom:0;left:0;right:0}
+  /* Screens need bottom padding for fixed nav */
+  #s-home,#s-tr,#s-hist,#s-st,#s-breathe{padding-bottom:calc(62px + env(safe-area-inset-bottom,0px))}
   .sb{
     height:env(safe-area-inset-top,44px);
     padding:0;
@@ -210,15 +223,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
 .t-msg{font-size:var(--t-sm);font-weight:500;color:rgba(255,255,255,.92);line-height:1.4}
 
 /* ── SCREENS ── */
-.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;display:none;-webkit-overflow-scrolling:touch;scroll-padding-top:52px}
+.screen{display:none;-webkit-overflow-scrolling:touch}
 /* Transparent sticky top guard — prevents content scrolling behind SB */
-.screen::before{content:'';display:block;height:52px;position:sticky;top:0;z-index:100;pointer-events:none;margin-bottom:-52px;flex-shrink:0}
+.screen::before{display:none}
 @media(max-width:699px){.screen::before{height:env(safe-area-inset-top,44px)}}
 .screen::-webkit-scrollbar{display:none}
-.screen.on{display:block;pointer-events:all}
+.screen.on{display:block;pointer-events:all;width:100%}
 .screen.reveal{animation:rv .32s var(--snap) both}
 @keyframes rv{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#s-ob.on{display:flex;flex-direction:column;background:var(--bg)}
+#s-ob.on{display:flex;flex-direction:column;background:var(--bg);min-height:100vh}
 
 /* ── NAV — always bottom ── */
 .bnav{position:absolute;bottom:0;left:0;right:0;height:calc(72px + var(--safe-bottom));z-index:400;transition:transform .3s var(--ease),opacity .3s}
@@ -456,7 +469,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
   border:1px solid rgba(88,85,214,.16);border-radius:var(--r-l);
   padding:20px 20px 20px 22px;
   margin-bottom:var(--s24);
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;flex-shrink:0;
 }
 .insight-card::after{
   content:'';position:absolute;right:-24px;top:-24px;width:120px;height:120px;border-radius:50%;
@@ -479,7 +492,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
   color:rgba(255,255,255,.07);line-height:1;letter-spacing:-.05em;pointer-events:none;
 }
 .bestday-tag{font-family:'DM Mono',monospace;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;position:relative;z-index:1}
-.bestday-name{font-family:'DM Serif Display',serif;font-size:var(--d-sm);color:#fff;margin-bottom:4px;position:relative;z-index:1}
+.bestday-name{font-family:'DM Serif Display',serif;font-size:var(--d-sm);color:#fff;margin-bottom:4px;position:relative;z-index:2}
 .bestday-sub{font-size:var(--t-sm);color:rgba(255,255,255,.52);position:relative;z-index:1}
 
 /* Divider label — single line, no bold heading */
@@ -700,7 +713,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
 /* Dot grid overlay */
 .sum-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.04) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
 
-.sum-blob-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:var(--s16);z-index:2}
+.sum-blob-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:var(--s16);z-index:2;padding:48px}
 .sum-blob{
   width:200px;height:200px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;font-size:var(--d-xl);
@@ -712,10 +725,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);display:flex;align-it
   33%{border-radius:52% 48% 55% 45%/48% 52% 48% 52%;transform:scale(1.03)}
   66%{border-radius:48% 52% 45% 55%/52% 48% 52% 48%;transform:scale(.97)}
 }
-.sum-blob.G{background:rgba(45,184,122,.28);box-shadow:0 0 100px rgba(45,184,122,.26),0 0 0 36px rgba(45,184,122,.07)}
-.sum-blob.C{background:rgba(61,155,232,.26);box-shadow:0 0 100px rgba(61,155,232,.24),0 0 0 36px rgba(61,155,232,.07)}
-.sum-blob.S{background:rgba(240,112,64,.26);box-shadow:0 0 100px rgba(240,112,64,.24),0 0 0 36px rgba(240,112,64,.07)}
-.sum-blob.H{background:rgba(224,96,154,.26);box-shadow:0 0 100px rgba(224,96,154,.24),0 0 0 36px rgba(224,96,154,.07)}
+.sum-blob.G{background:rgba(45,184,122,.25);box-shadow:0 16px 80px rgba(45,184,122,.35),0 0 0 40px rgba(45,184,122,.1),0 0 0 80px rgba(45,184,122,.04)}
+.sum-blob.C{background:rgba(61,155,232,.24);box-shadow:0 16px 80px rgba(61,155,232,.35),0 0 0 40px rgba(61,155,232,.1),0 0 0 80px rgba(61,155,232,.04)}
+.sum-blob.S{background:rgba(240,112,64,.24);box-shadow:0 16px 80px rgba(240,112,64,.35),0 0 0 40px rgba(240,112,64,.1),0 0 0 80px rgba(240,112,64,.04)}
+.sum-blob.H{background:rgba(224,96,154,.24);box-shadow:0 16px 80px rgba(224,96,154,.35),0 0 0 40px rgba(224,96,154,.1),0 0 0 80px rgba(224,96,154,.04)}
 .conf-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:10}
 @keyframes cf-fall{0%{transform:translateY(-8px) rotate(var(--r0));opacity:1}85%{opacity:1}100%{transform:translateY(360px) rotate(var(--r1));opacity:0}}
 
@@ -1597,10 +1610,10 @@ var FL=['','Scattered','Distracted','Foggy','Low','Moderate','Steady','Decent','
 var EMAP={meetings:'📅',deadlines:'⏰',unclear:'❓',isolated:'🏠',sleep:'😴',personal:'💭',win:'🎉',flow:'⚡',exercise:'🏃',creative:'🎨',social:'👋',outside:'🌿'};
 var NAMES={G:'Good',C:'Calm',S:'Stretched',H:'Heavy'};
 var CD={
-  G:{e:'<svg width=\"72\" height=\"72\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22\" stroke=\"#2DB87A\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',desc:"You're energised and clear-headed. This is your peak state — protect it.",pat:"Tuesday mornings are your most consistently good window. The pattern holds over 4 weeks.",si:'\u26A1',st:"Block your most cognitively demanding work right now. Working memory is at its best on Good days.",cmp:"Tracking above your 30-day baseline today. One of your stronger check-ins this month.",cbt:"What's the most important thing I could finish today while I'm in this state?"},
-  C:{e:'<svg width=\"72\" height=\"72\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,20 9,20 12,15 16,25 20,15 24,25 27,20 36,20\" stroke=\"#3D9BE8\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',desc:"Steady, clear, and present. Calm is your highest-focus state — rarer than Good.",pat:"Your calmest days almost always follow low-meeting mornings. The pattern is consistent.",si:'\uD83C\uDF05',st:"Use this window for work that needs sustained concentration — deep reading, writing, complex problems.",cmp:"Calmer than 70% of your recent check-ins. This is a state worth building habits around.",cbt:"What conditions created this calm today, and how do I protect them tomorrow?"},
-  S:{e:'<svg width=\"72\" height=\"72\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20\" stroke=\"#F07040\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',desc:"Running at capacity. Too many demands, not enough space between them.",pat:"Stretched check-ins cluster around Wednesday afternoons and end-of-sprint days in your data.",si:'\uD83D\uDEB6',st:"Take 5 minutes to walk before your next commitment. Physical movement cuts perceived stress by up to 40%.",cmp:"Stretched on 3 of your last 5 check-ins. This is becoming a pattern worth addressing this week.",cbt:"What's one thing I can drop, delegate, or defer from today's list right now?"},
-  H:{e:'<svg width=\"72\" height=\"72\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,16 10,16 14,22 20,28 26,22 30,16 36,16\" stroke=\"#E0609A\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',desc:"Carrying more than usual. Heavy days are data — not failure.",pat:"Two heavy check-ins this week. When this repeats, recovery sleep makes the single biggest difference.",si:'\uD83E\uDEB4',st:"Close unnecessary tabs. Three slow exhales, longer out than in. Then just the next one thing — nothing else.",cmp:"Two heavy days in a week is above your typical range. Tonight's rest matters more than any late task.",cbt:"What's the absolute smallest step that would feel like progress right now?"}
+  G:{e:'<svg width="72" height="72" viewBox="0 0 40 40" fill="none"><polyline points="4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22" stroke="#2DB87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',desc:"You're energised and clear-headed. This is your peak state — protect it.",pat:"Tuesday mornings are your most consistently good window. The pattern holds over 4 weeks.",si:'\u26A1',st:"Block your most cognitively demanding work right now. Working memory is at its best on Good days.",cmp:"Tracking above your 30-day baseline today. One of your stronger check-ins this month.",cbt:"What's the most important thing I could finish today while I'm in this state?"},
+  C:{e:'<svg width="72" height="72" viewBox="0 0 40 40" fill="none"><polyline points="4,20 9,20 12,15 16,25 20,15 24,25 27,20 36,20" stroke="#3D9BE8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',desc:"Steady, clear, and present. Calm is your highest-focus state — rarer than Good.",pat:"Your calmest days almost always follow low-meeting mornings. The pattern is consistent.",si:'\uD83C\uDF05',st:"Use this window for work that needs sustained concentration — deep reading, writing, complex problems.",cmp:"Calmer than 70% of your recent check-ins. This is a state worth building habits around.",cbt:"What conditions created this calm today, and how do I protect them tomorrow?"},
+  S:{e:'<svg width="72" height="72" viewBox="0 0 40 40" fill="none"><polyline points="3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20" stroke="#F07040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',desc:"Running at capacity. Too many demands, not enough space between them.",pat:"Stretched check-ins cluster around Wednesday afternoons and end-of-sprint days in your data.",si:'\uD83D\uDEB6',st:"Take 5 minutes to walk before your next commitment. Physical movement cuts perceived stress by up to 40%.",cmp:"Stretched on 3 of your last 5 check-ins. This is becoming a pattern worth addressing this week.",cbt:"What's one thing I can drop, delegate, or defer from today's list right now?"},
+  H:{e:'<svg width="72" height="72" viewBox="0 0 40 40" fill="none"><polyline points="4,16 10,16 14,22 20,28 26,22 30,16 36,16" stroke="#E0609A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',desc:"Carrying more than usual. Heavy days are data — not failure.",pat:"Two heavy check-ins this week. When this repeats, recovery sleep makes the single biggest difference.",si:'\uD83E\uDEB4',st:"Close unnecessary tabs. Three slow exhales, longer out than in. Then just the next one thing — nothing else.",cmp:"Two heavy days in a week is above your typical range. Tonight's rest matters more than any late task.",cbt:"What's the absolute smallest step that would feel like progress right now?"}
 };
 var QS=[
   {i:'🔋',t:"Manage your energy, not your time. Time is fixed. Energy is renewable.",a:'Tony Schwartz'},
@@ -1770,7 +1783,7 @@ function finishCI(){
   var base={G:72,C:65,S:42,H:28}[st]||50;
   var pct=Math.round(base+(f-5)*3.5);pct=Math.max(5,Math.min(99,pct));
   var sb=document.getElementById('sum-blob');
-  if(sb){sb.className='sum-blob '+st;sb.textContent=d.e;sb.style.animation='none';void sb.offsetWidth;sb.style.animation='sum-idle 6s ease-in-out infinite';}
+  if(sb){sb.className='sum-blob '+st;sb.innerHTML=d.e;sb.style.cssText+='display:flex;align-items:center;justify-content:center';sb.style.animation='none';void sb.offsetWidth;sb.style.animation='sum-idle 6s ease-in-out infinite';}
   document.getElementById('sum-bg').className='sum-bg '+st;
   var pp=document.getElementById('sum-pct');if(pp){pp.style.color={G:'var(--G)',C:'var(--C)',S:'var(--S)',H:'var(--H)'}[st]||'var(--ink-100)';
   var pctStart=0,pctEnd=pct,pctStep=Math.ceil(pctEnd/28);
@@ -1834,7 +1847,7 @@ function doneSummary(){var db=document.getElementById('done-btn');if(db){db.clas
   document.getElementById('cta-sub').textContent='See you tomorrow. Rest well.';
   go('home');
   var hs=document.getElementById('home-stats');if(hs)hs.style.display='flex';
-  var hbg=document.getElementById('hh-bg');if(hbg){hbg.className='hh '+st;}
+  var _st=S.emo||'S';var hbg=document.getElementById('hh-bg');if(hbg){hbg.className='hh '+_st;}
   var ms={3:'3-day streak \uD83C\uDF31',7:'One full week \uD83D\uDD25',14:'14 days \u2014 building something real \u26A1',21:'21 days. This is a habit. \uD83C\uDFC6',30:'30-day streak \uD83C\uDF1F'};
   var msg=ms[S.streak];
   setTimeout(function(){showToast(msg||'Check-in saved. See you tomorrow. \uD83C\uDF19',msg?'brand':'good');},360);
@@ -1915,7 +1928,7 @@ function buildWeekStrip(){
   var todayIdx=(jsDay===0)?6:jsDay-1;
   var dayLabels=['M','T','W','T','F','S','S'];
   var allPast={0:'G',1:'G',2:'S',3:'S',4:'C',5:'G'};
-  var EMOJ={G:'<svg width=\"16\" height=\"16\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22\" stroke=\"#2DB87A\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',C:'<svg width=\"16\" height=\"16\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,20 9,20 12,15 16,25 20,15 24,25 27,20 36,20\" stroke=\"#3D9BE8\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',S:'<svg width=\"16\" height=\"16\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20\" stroke=\"#F07040\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>',H:'<svg width=\"16\" height=\"16\" viewBox=\"0 0 40 40\" fill=\"none\"><polyline points=\"4,16 10,16 14,22 20,28 26,22 30,16 36,16\" stroke=\"#E0609A\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>'};
+  var EMOJ={G:'<svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22" stroke="#2DB87A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',C:'<svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,20 9,20 12,15 16,25 20,15 24,25 27,20 36,20" stroke="#3D9BE8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',S:'<svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20" stroke="#F07040" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',H:'<svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,16 10,16 14,22 20,28 26,22 30,16 36,16" stroke="#E0609A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>'};
   for(var i=0;i<7;i++){
     var dot=document.getElementById('wd-'+i);
     var lbl=document.getElementById('wl-'+i);
