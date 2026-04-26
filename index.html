@@ -13,7 +13,7 @@
 /* ── DESIGN TOKENS ── */
 :root{
   /* Surface — one warm material */
-  --bg:#F5F1EA;
+  --bg:#F2EEE6;
   --surface:#FFFFFF;
   --surface2:#FAF8F4;
   --surface3:#F0EDE6;
@@ -24,7 +24,7 @@
   --ink-1:#1A1714;
   --ink-2:#3D3830;
   --ink-3:#6B6560;
-  --ink-4:#9E9890;
+  --ink-4:#857F78;
   --ink-5:#C8C2BA;
 
   /* Brand */
@@ -70,7 +70,7 @@
   --tint-purple-1:#ECEAFF;  --tint-purple-2:#DDE8FF;  --tint-purple-3:#D8EEFF;
   --tint-green-1:#E0F5EC;   --tint-green-2:#CCE8D8;
   --tint-cbt-1:#F5F3FF;     --tint-cbt-2:#EEE8FF;
-  --body-desktop:#E6E2D8;      /* quote card q2 background */
+  --body-desktop:#F2EEE6;      /* quote card q2 background */
 
   /* 8px grid spacing */
   --s8:8px; --s16:16px; --s24:24px; --s32:32px; --s48:48px; --s64:64px;
@@ -91,15 +91,18 @@
 
 /* ── BASE ── */
 html{height:100%}body{min-height:100%;overflow-x:hidden}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;background:
+    radial-gradient(ellipse 55% 50% at 20% 12%,rgba(88,85,214,.11),transparent 55%),
+    radial-gradient(ellipse 50% 50% at 82% 88%,rgba(45,184,122,.08),transparent 55%),
+    var(--bg);-webkit-font-smoothing:antialiased;background-attachment:fixed}
 
 /* ── FRAME — fully responsive ── */
 .frame{
   width:100%;
   min-height:100vh;
   background:
-    radial-gradient(ellipse 80% 50% at 82% 2%,rgba(88,85,214,.08) 0%,transparent 55%),
-    radial-gradient(ellipse 70% 45% at 16% 98%,rgba(45,184,122,.06) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 50% at 82% 2%,rgba(88,85,214,.13) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 45% at 16% 98%,rgba(45,184,122,.10) 0%,transparent 55%),
     var(--bg);
   position:relative;
 }
@@ -130,11 +133,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
   /* Desktop: extra top clearance for the 48px bevel + 52px fake SB */
   .hh{padding-top:78px}
   .ci-hd{padding-top:76px}
-  .tr-hero{padding-top:76px}
-  .hist-hd{padding-top:76px}
   
-  .bth-hd{padding-top:76px}
+  
   .sum-hero{padding-top:80px}
+    
+  /* Onboarding: fill frame, footer pinned to bottom */
+  #s-ob.on{height:100%}
+  .ob-clips{overflow:hidden;flex:0 0 auto}
+  .ob-foot{margin-top:auto;padding-bottom:32px}
 }
 @media(min-width:1100px){.frame{max-width:420px}}
 
@@ -172,7 +178,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
   display:flex;align-items:flex-end;justify-content:space-between;
   padding:0 22px 10px;
   z-index:500;pointer-events:none;
-  background:rgba(245,241,234,.92);
+  background:var(--bg);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,0,0,.07);
+}
+.sb-t{font-family:'DM Mono',monospace;font-size:var(--t-xs);font-weight:500;letter-spacing:.06em;color:var(--ink-2)}
+.sb-icons{display:flex;gap:4px;align-items:center}
+.sb-icons svg{fill:var(--ink-3)}
+/* Mobile: hide the fake bar entirely — the real device draws its own */
+@media(min-width:1100px){.frame{max-width:420px}}
+
+/* ── LOADER ── */
+#loader{
+  position:absolute;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .7s var(--ease),visibility .7s;
+}
+#loader.out{opacity:0;visibility:hidden;pointer-events:none}
+.lo-blob{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--brand);
+  display:flex;align-items:center;justify-content:center;font-size:var(--d-sm);
+  animation:lo-pulse 2.2s ease-in-out infinite;
+  box-shadow:0 8px 32px rgba(88,85,214,.32);
+}
+@keyframes lo-pulse{
+  0%,100%{transform:scale(1);border-radius:50%}
+  33%{transform:scale(1.07,.94);border-radius:52% 48% 55% 45%/48% 52% 48% 52%}
+  66%{transform:scale(.95,1.05);border-radius:48% 52% 45% 55%/52% 48% 52% 48%}
+}
+.lo-name{font-family:'DM Serif Display',serif;font-size:var(--d-sm);color:var(--ink-1);letter-spacing:-.01em}
+.lo-sub{font-family:'DM Mono',monospace;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-4)}
+
+/* ── STATUS BAR ── */
+:root{
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+/* Desktop: show fake status bar — it's part of the phone frame aesthetic */
+.sb{
+  position:absolute;top:0;left:0;right:0;
+  height:52px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 22px 10px;
+  z-index:500;pointer-events:none;
+  background:var(--bg);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid rgba(0,0,0,.07);
@@ -184,7 +235,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 @media(max-width:699px){
   .frame{overflow-x:hidden;max-width:100%}
   /* Mobile: screens flow normally, no absolute positioning */
-  .screen.on{display:block;width:100%;min-height:100vh}
   .bnav{position:fixed !important;bottom:0;left:0;right:0}
   /* Screens need bottom padding for fixed nav */
   #s-home,#s-tr,#s-hist,#s-st,#s-breathe{padding-bottom:calc(62px + env(safe-area-inset-bottom,0px))}
@@ -204,6 +254,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
   .sum-hero{padding:calc(env(safe-area-inset-top,44px) + 16px) 26px 32px}
   .bnav{height:calc(58px + env(safe-area-inset-bottom,0px))}
   .bnav-row{height:56px;margin-bottom:env(safe-area-inset-bottom,0px)}
+
+  .screen::before{height:env(safe-area-inset-top,44px)}
+  /* Onboarding — more compact on mobile */
+  .ob-slide{padding:40px 24px 0}
+  .ob-slide-l{padding-top:56px}
+  .ob-blob{width:130px;height:130px;margin-bottom:var(--s16)}
+  .ob-h{font-size:var(--d-sm)}
+  
+  .ob-clips{flex:1;overflow:hidden;min-height:0}
+  #s-ob.on{height:100dvh;height:100vh}
+  .ob-foot{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+
+  /* Onboarding: full height, safe area foot */
+  #s-ob.on{height:100dvh;height:100vh}
+  .ob-foot{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+
+  #s-ob.on{min-height:100vh}
 }
 /* On summary hero — statusbar blends into colour */
 .sb.hero-tint{background:transparent}
@@ -226,19 +293,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 .screen{display:none;-webkit-overflow-scrolling:touch}
 /* Transparent sticky top guard — prevents content scrolling behind SB */
 .screen::before{display:none}
-@media(max-width:699px){.screen::before{height:env(safe-area-inset-top,44px)}}
 .screen::-webkit-scrollbar{display:none}
-.screen.on{display:block;pointer-events:all;width:100%}
+.screen.on{display:block;pointer-events:all;width:100%;touch-action:pan-y}
 .screen.reveal{animation:rv .32s var(--snap) both}
 @keyframes rv{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#s-ob.on{display:flex;flex-direction:column;background:var(--bg);min-height:100vh}
+#s-ob.on{display:flex!important;flex-direction:column;background:var(--bg)}
 
 /* ── NAV — always bottom ── */
 .bnav{position:absolute;bottom:0;left:0;right:0;height:calc(72px + var(--safe-bottom));z-index:400;transition:transform .3s var(--ease),opacity .3s}
 .bnav.off{transform:translateY(100%);opacity:0;pointer-events:none}
 .bnav-bg{
   position:absolute;inset:0;
-  background:rgba(245,241,234,.96);
+  background:var(--bg);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-top:1px solid var(--border);
   box-shadow:0 -1px 0 var(--surface2);
@@ -287,7 +353,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 /* ════════════════════════════════
    ONBOARDING
 ════════════════════════════════ */
-.ob-clips{flex:1;overflow:hidden}
 .ob-track{display:flex;width:400%;height:100%;transition:transform .48s var(--ease)}
 .ob-slide{width:25%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:80px 28px 0;text-align:center}
 .ob-slide-l{align-items:flex-start;text-align:left}
@@ -310,7 +375,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 .ob-mc-2{background:var(--brand-a10);border:1px solid var(--brand-a20)}
 .ob-mc-3{background:var(--S-a12);border:1px solid var(--S-a25)}
 .ob-mc-e{font-size:var(--d-md)}.ob-mc-n{font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
-.ob-foot{padding:var(--s16) 24px var(--s32);flex-shrink:0}
+.ob-foot{padding:var(--s16) 24px 40px;flex-shrink:0;background:var(--bg)}
 .ob-dots{display:flex;gap:var(--s8);justify-content:center;margin-bottom:var(--s16)}
 .ob-dot{height:8px;width:8px;border-radius:8px;background:var(--ink-5);transition:width .3s var(--ease),background .3s}
 .ob-dot.on{width:24px;background:var(--brand)}
@@ -816,7 +881,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
    BREATHE
 ════════════════════════════════ */
 #s-breathe{padding-bottom:calc(62px + var(--safe-bottom));background:linear-gradient(168deg,rgba(234,230,255,.95) 0%,rgba(221,232,255,.88) 40%,transparent 100%)}
-.bth-hd{padding:64px 22px var(--s16);background:linear-gradient(168deg,rgba(234,230,255,.6) 0%,transparent 50%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
+.bth-hd{padding:calc(env(safe-area-inset-top,0px) + 64px) 22px var(--s16);background:linear-gradient(168deg,rgba(234,230,255,.6) 0%,transparent 50%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
 .bth-title{font-family:'DM Serif Display',serif;font-size:var(--d-md);letter-spacing:-.035em;color:var(--ink-1);margin-bottom:var(--s8)}
 .bth-sub{font-size:var(--t-sm);color:var(--ink-3);line-height:1.75}
 .bth-body{display:flex;flex-direction:column;align-items:center;padding:var(--s24) 28px var(--s16);gap:var(--s24)}
@@ -853,7 +918,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 ════════════════════════════════ */
 #s-tr{padding-bottom:calc(62px + var(--safe-bottom));background:radial-gradient(ellipse 85% 40% at 88% 4%,rgba(45,184,122,.07) 0%,transparent 60%),radial-gradient(ellipse 70% 35% at 12% 96%,rgba(88,85,214,.06) 0%,transparent 55%),var(--bg)}
 /* Hero: dominant stat, not a gradient header */
-.tr-hero{padding:64px 24px var(--s24);position:relative;overflow:hidden;background:linear-gradient(162deg,rgba(204,238,220,.88) 0%,rgba(224,245,236,.7) 45%,transparent 75%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
+.tr-hero{padding:calc(env(safe-area-inset-top,0px) + 64px) 24px var(--s24);position:relative;overflow:hidden;background:linear-gradient(162deg,rgba(204,238,220,.88) 0%,rgba(224,245,236,.7) 45%,transparent 75%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
 .tr-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(45,184,122,.12),transparent 68%);pointer-events:none}
 .tr-hero-eyebrow{font-family:'DM Mono',monospace;font-size:var(--t-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-4);margin-bottom:var(--s8);position:relative;z-index:1}
 /* BIG number as hero — 71% = dominant visual */
@@ -966,7 +1031,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
    HISTORY — anchored by summary chart
 ════════════════════════════════ */
 #s-hist{padding-bottom:calc(62px + var(--safe-bottom));background:radial-gradient(ellipse 85% 38% at 85% 3%,rgba(224,96,154,.07) 0%,transparent 58%),radial-gradient(ellipse 65% 35% at 15% 95%,rgba(88,85,214,.06) 0%,transparent 55%),var(--bg)}
-.hist-hd{padding:64px 24px var(--s16);position:relative;overflow:hidden;background:linear-gradient(162deg,rgba(248,218,234,.88) 0%,rgba(238,230,255,.72) 50%,transparent 75%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
+.hist-hd{padding:calc(env(safe-area-inset-top,0px) + 64px) 24px var(--s16);position:relative;overflow:hidden;background:linear-gradient(162deg,rgba(248,218,234,.88) 0%,rgba(238,230,255,.72) 50%,transparent 75%);border-radius:0 0 var(--r-xl) var(--r-xl);margin-bottom:2px}
 .hist-hd::before{content:'';position:absolute;top:-50px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(224,96,154,.1),transparent 68%);pointer-events:none}
 .hist-hd-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--s16);position:relative;z-index:1}
 .hist-title{font-family:'DM Serif Display',serif;font-size:var(--d-md);letter-spacing:-.035em;color:var(--ink-1)}
@@ -1131,7 +1196,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
         <div class="hh-name">Hi, <em id="hh-em">Alex</em></div>
       </div>
       <div class="streak-pill" id="streak-pill">
-        <svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22" stroke="#2DB87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M8 12a4 4 0 000-6l-1-1a4 4 0 00-5.7 5.7l1 1a4 4 0 002.7 1.3"/><path d="M14 10a4 4 0 000 6l1 1a4 4 0 005.7-5.7l-1-1A4 4 0 0017 9"/></svg>
         <span class="streak-n" id="streak-n">6</span>
         <span class="streak-lbl">-day streak</span>
       </div>
@@ -1465,8 +1530,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);-webkit-font-smoothin
 
     <div class="divider-lbl" style="margin-bottom:12px">Week view</div>
     <div class="wk-chart" id="wk-chart">
-      <div class="wk-row"><div class="wk-day">Mon</div><div class="wk-bg"><div class="wk-bar G" data-w="78"><span class="wk-bar-lbl">Good</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22" stroke="#2DB87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span></div>
-      <div class="wk-row"><div class="wk-day">Tue</div><div class="wk-bg"><div class="wk-bar G" data-w="84"><span class="wk-bar-lbl">Good</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="4,22 9,22 13,8 18,28 23,6 27,28 31,22 36,22" stroke="#2DB87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span></div>
+      <div class="wk-row"><div class="wk-day">Mon</div><div class="wk-bg"><div class="wk-bar G" data-w="78"><span class="wk-bar-lbl">Good</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M8 12a4 4 0 000-6l-1-1a4 4 0 00-5.7 5.7l1 1a4 4 0 002.7 1.3"/><path d="M14 10a4 4 0 000 6l1 1a4 4 0 005.7-5.7l-1-1A4 4 0 0017 9"/></svg></span></div>
+      <div class="wk-row"><div class="wk-day">Tue</div><div class="wk-bg"><div class="wk-bar G" data-w="84"><span class="wk-bar-lbl">Good</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M8 12a4 4 0 000-6l-1-1a4 4 0 00-5.7 5.7l1 1a4 4 0 002.7 1.3"/><path d="M14 10a4 4 0 000 6l1 1a4 4 0 005.7-5.7l-1-1A4 4 0 0017 9"/></svg></span></div>
       <div class="wk-row"><div class="wk-day">Wed</div><div class="wk-bg"><div class="wk-bar S" data-w="62"><span class="wk-bar-lbl">Stretched</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20" stroke="#F07040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span></div>
       <div class="wk-row"><div class="wk-day">Thu</div><div class="wk-bg"><div class="wk-bar S" data-w="58"><span class="wk-bar-lbl">Stretched</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20" stroke="#F07040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span></div>
       <div class="wk-row"><div class="wk-day today">Fri</div><div class="wk-bg"><div class="wk-bar S" data-w="54"><span class="wk-bar-lbl">Stretched</span></div></div><span class="wk-e"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><polyline points="3,20 7,20 9,12 11,26 13,10 15,26 17,14 19,26 21,12 23,26 25,18 29,20 37,20" stroke="#F07040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span></div>
@@ -1663,7 +1728,10 @@ function showScr(id,anim){
   SCR.forEach(function(s){var el=document.getElementById('s-'+s);if(el)el.classList.remove('on','reveal');});
   var nxt=document.getElementById('s-'+id);if(!nxt)return;
   nxt.classList.add('on');if(anim!==false)nxt.classList.add('reveal');
-  nxt.scrollTop=0;S.scr=id;
+  nxt.scrollTop=0;
+  // Reset window scroll on mobile (block-flow screens)
+  try{window.scrollTo({top:0,left:0,behavior:'instant'});}catch(e){window.scrollTo(0,0);}
+  S.scr=id;
   var nav=document.getElementById('bnav');
   if(WITH_NAV.indexOf(id)>=0){
     nav.classList.remove('off');
